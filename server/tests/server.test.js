@@ -12,7 +12,9 @@ const todos = [
     },
     {
         _id: new ObjectID(),
-        text:'Learn Supertest'
+        text:'Learn Supertest',
+        completed: true,
+        completedAt: 111
     }
 ]
 
@@ -155,5 +157,43 @@ describe('DELETE /todos/:id', ()=>{
 
     })
 
+
+})
+
+describe('PATCH /todos/:id', ()=> {
+
+    it('should update a todo', (done)=> {
+
+        var id = todos[0]._id.toHexString();
+
+        request(app)
+        .patch(`/todos/${id}`)
+        .send({text:'Update Learn Mocha',completed: true})
+        .expect(200)
+        .expect((res)=> {
+            expect(res.body.todo.text).toBe('Update Learn Mocha')
+            expect(res.body.todo.completed).toBe(true);
+            expect(res.body.todo.completedAt).toBeA('number');
+        })
+        .end(done);
+
+    })
+
+    it('should clear completedAt when completed is set to false', (done)=>{
+
+        var id = todos[1]._id.toHexString();
+
+        request(app)
+        .patch(`/todos/${id}`)
+        .send({text:'Update Learn Supertest',completed: false})
+        .expect(200)
+        .expect((res)=> {
+            expect(res.body.todo.text).toBe('Update Learn Supertest')
+            expect(res.body.todo.completed).toBe(false);
+            expect(res.body.todo.completedAt).toNotExist()
+        })
+        .end(done);
+
+    })
 
 })
