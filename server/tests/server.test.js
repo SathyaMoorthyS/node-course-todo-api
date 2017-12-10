@@ -14,8 +14,7 @@ beforeEach(populateTodos);
 
 describe('POST /todos', ()=> {
     it('should create a new todo', (done)=>{
-
-        console.log('>>should create a new todo')
+        
         var todoText="From POST Tescase";
 
         request(app)
@@ -263,6 +262,66 @@ describe('POST /users', ()=> {
         .send({email,password})
         .expect(400)
         .end(done);
+    })
+
+})
+
+describe('POST /users/login', ()=>{
+
+    it('should login and return user auth token', (done)=>{
+
+        request(app)
+        .post('/users/login')
+        .send({
+            email: users[1].email,
+            password: users[1].password
+        })
+        .expect(200)
+        .expect( (res) => {            
+            expect(res.headers['x-auth']).toExist();          
+        })
+        .end((err, res) => {
+            if(err){
+                return done(err);
+            }
+
+            User.findById(users[1]._id).then( (user)=> {                
+                expect(user.tokens[0]).toInclude({
+                    access:'auth',
+                    token: res.headers['x-auth']
+                });
+                
+                done();
+            }).catch((e)=> done(e));
+
+        })
+
+    })
+
+    it('should reject invalid login', (done)=>{
+        
+        request(app)
+        .post('/users/login')
+        .send({
+            email: users[1].email,
+            password: users[1].password+'1'
+        })
+        .expect(400)
+        .expect( (res) => {
+            expect(res.headers['x-auth']).toNotExist();          
+        })
+        .end((err, res) => {
+            if(err){
+                return done(err);
+            }
+
+            User.findById(users[1]._id).then( (user)=> {                
+                expect(user.tokens.length).toBe(0);
+                done();
+            }).catch((e)=> done(e));
+
+        })
+
     })
 
 })

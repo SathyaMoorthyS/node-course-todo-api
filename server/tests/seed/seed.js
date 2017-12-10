@@ -13,8 +13,8 @@ const users =[
         'password':'test123',
         'tokens':[
             {
-            'token' : jwt.sign({_id:userOneId, access:'auth'},'user').toString(),
-            'access':'auth'
+            token : jwt.sign({_id:userOneId, access:'auth'},'user').toString(),
+            access:'auth'
             }            
         ]
     },
@@ -24,8 +24,8 @@ const users =[
         'password':'test123',
         'tokens':[
             {
-            'token' : jwt.sign({_id:userTwoId, access:'auth'},'user').toString(),
-            'access':'auth'
+            token : jwt.sign({_id:userTwoId, access:'auth'},'user').toString(),
+            access:'auth'
             }            
         ]
     }
@@ -49,7 +49,9 @@ const populateUsers = (done)=>{
         var userOne = new User(users[0]).save();
         var userTwo = new User(users[1]).save();
         return Promise.all([userOne, userTwo]);
-    }).then(()=> done());
+    }).then(()=> {        
+        done();
+    });
 }
 
 const populateTodos = (done)=>{
