@@ -45,7 +45,7 @@ UserSchema.methods.generateAuthToken = function (){
     var user = this;
     var access = 'auth';
     var token = jwt.sign({_id:user._id.toHexString(), access},'user').toString();    
-    user.tokens=[];//Added Only this line to fix test case should login and return user auth token
+    //user.tokens=[];//Added Only this line to fix test case should login and return user auth token
     user.tokens.push({access, token});    
     return user.save().then((err)=>{        
         return token
@@ -90,13 +90,13 @@ UserSchema.statics.findByCredentials = function (email, password){
                             resolve(user);
                         }else{
                             //original code
-                            //reject();
+                            reject();
 
                             //To fix test case should reject invalid login
-                            user.tokens=[];
-                            user.save().then(()=>{
-                                reject();
-                            })
+                            // user.tokens=[];
+                            // user.save().then(()=>{
+                            //     reject();
+                            // })
                             
                         }
                     })

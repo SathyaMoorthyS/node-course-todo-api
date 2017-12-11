@@ -34,13 +34,15 @@ const users =[
 const todos = [
     {
         _id: new ObjectID(),
-        text:'Learn Mocha'
+        text:'Learn Mocha',
+        createdBy: userOneId
     },
     {
         _id: new ObjectID(),
         text:'Learn Supertest',
         completed: true,
-        completedAt: 111
+        completedAt: 111,
+        createdBy: userTwoId
     }
 ]
 
