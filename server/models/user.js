@@ -39,12 +39,12 @@ var UserSchema = new mongoose.Schema(
 UserSchema.methods.toJSON = function(){
     var user = this;
     var userObject = user.toObject();
-    return _.pick(userObject, ['_id', 'email', 'tokens'])
+    return _.pick(userObject, ['_id', 'email'])
 }
 UserSchema.methods.generateAuthToken = function (){
     var user = this;
     var access = 'auth';
-    var token = jwt.sign({_id:user._id.toHexString(), access},'user').toString();    
+    var token = jwt.sign({_id:user._id.toHexString(), access}, process.env.JWT_SECRET).toString();    
     //user.tokens=[];//Added Only this line to fix test case should login and return user auth token
     user.tokens.push({access, token});    
     return user.save().then((err)=>{        
@@ -65,7 +65,7 @@ UserSchema.statics.findByToken = function(token){
     var User = this;
     var decoded;
     try{
-        decoded = jwt.verify(token,'user');
+        decoded = jwt.verify(token,process.env.JWT_SECRET);
     }catch(e){
         return Promise.reject();
     }    
