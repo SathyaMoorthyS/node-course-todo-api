@@ -47,7 +47,7 @@ UserSchema.methods.generateAuthToken = function (){
     var token = jwt.sign({_id:user._id.toHexString(), access}, process.env.JWT_SECRET).toString();    
     //user.tokens=[];//Added Only this line to fix test case should login and return user auth token
     user.tokens.push({access, token});    
-    return user.save().then((err)=>{        
+    return user.save().then((user)=>{        
         return token
     })
 }
